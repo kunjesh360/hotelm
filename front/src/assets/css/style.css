@@ -1,0 +1,206 @@
+:root{
+    --color:#010517;
+    --background-color:#ffffff;
+    --nav-color:#00072c;
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+.home-page{
+    height: 100vh;
+    width: 100%;
+    background-color: var(--background-color);
+}
+
+.text{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.text-content p:nth-child(1){
+    font-size: 84px;
+    font-weight: 900;
+    font-family: "Bebas Neue", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+.text-content p:nth-child(2){
+    font-size: 18px;
+    
+    font-family: "Madimi One", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.nav-container{
+    width: 83%;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav{
+    height: 10vh;
+    width: 100%;
+    background-color: #161616;
+    display: flex;
+    align-items: center;
+}
+
+ul{
+    display: flex;
+    justify-content: space-between;
+    list-style: none;
+    width: 55vw;
+}
+
+.buttons{
+    display: flex;
+    gap: 3vw;
+}
+.register{
+    display: flex;
+    gap: 2vw;
+}
+a{
+    font-size: 1.1rem;
+    text-decoration: none;
+    color: white;
+    position: relative;
+    font-family: "Sarabun", sans-serif;
+    font-weight: 500;
+    font-style: normal;
+}
+
+.abc{
+    font-size: 1.1rem;
+    text-decoration: none;
+    color: white;
+    position: relative;
+    font-family: "Sarabun", sans-serif;
+    font-weight: 500;
+    font-style: normal;
+}
+
+li::after{
+    margin: auto;
+    display: block;
+    content:"";
+    height: 3px;
+    width: 0%;
+    background-color: #fff82d;
+    transition: .5s;
+    text-decoration: none;
+    color: #ffffff;
+}
+.abc::after{
+    margin: auto;
+    display: block;
+    content:"";
+    height: 3px;
+    width: 0%;
+    background-color: #fff82d;
+    transition: .5s;
+}
+
+li:hover::after{
+    width: 100%;
+}
+.abc:hover::after{
+    width: 100%;
+}
+
+.home{
+    height: 90vh;
+    width: 100%;
+}
+.hotel-slide{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    background-color: rgba(255, 230, 196, 0.536);
+
+}
+
+.room-slide{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    background-color: #83bde980;
+}
+
+.chair-slide{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    background-color: rgba(247, 170, 170, 0.512);
+}
+
+.swiming-slide{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    background-color: #f4efd980;
+}
+.text-content{
+    width: 65%;
+}
+
+.one-img, .two-img, .three-img, .four-img{
+    width: 40%;
+    margin-right: 80px;
+    display: flex;
+    justify-content: center;
+}
+
+.one-img>img, .two-img>img, .three-img>img, .four-img>img{
+    height: 80vh;
+}
+
+
+.text{
+    height: 100%;   
+    width: 60%;
+}
+
+
+.logo-img{
+    height: 7vh;
+}
+.explore-page{
+    height: 100vh;
+    width: 100%;
+    background-color: #f03243;
+}
+
+
+.slider-controls {
+    display: flex;
+    position: absolute;
+    width: 100%;
+    justify-content: space-between;
+}
+.slider-controls .next-slide,.slider-controls .prev-slide {
+    width: 64px;
+    height: 64px;
+    margin: 32px;
+    background: transparent;
+    border: 2px solid black;
+    font-size: 32px;
+    border-radius: 50%;
+    transform: translate(0, 35vh);
+}
+
+.slider-controls .next-slide:hover,.slider-controls .prev-slide:hover {
+    background: rgba(155,155,155, 0.25);
+}
+
+
