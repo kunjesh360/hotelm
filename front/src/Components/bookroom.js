@@ -1,3 +1,4 @@
+import {  useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
 import { useLocation } from 'react-router-dom';
@@ -6,46 +7,15 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider, DatePicker,TimePicker } from '@mui/x-date-pickers';
 
 const Roombook = () => {
-  const [customerName, setCustomerName] = useState('');
-  const [checkInDate, setCheckInDate] = useState(dayjs()); // Initialize to current date
-  const [checkOutDate, setCheckOutDate] = useState(dayjs().add(1, 'day')); // Initialize to next day
+  const navigate = useNavigate();
   const location = useLocation();
   const { roomid, hotelid } = location.state;
-  
-  console.log("hotel id---", roomid, hotelid);
-
-  useEffect(() => {
-    // Apply styles
-    const originalStyle = {
-      backgroundImage: document.body.style.backgroundImage,
-      backgroundSize: document.body.style.backgroundSize,
-      backgroundPosition: document.body.style.backgroundPosition,
-      backgroundRepeat: document.body.style.backgroundRepeat,
-      margin: document.body.style.margin,
-      height: document.body.style.height,
-    };
-
-    document.body.style.backgroundImage = "url('https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg?cs=srgb&dl=pexels-pixabay-258154.jpg&fm=jpg')";
-    document.body.style.backgroundSize = 'cover';
-    document.body.style.backgroundPosition = 'center';
-    document.body.style.backgroundRepeat = 'no-repeat';
-    document.body.style.margin = '0';
-    document.body.style.height = '100vh';
-
-    return () => {
-      // Reset to original style
-      document.body.style.backgroundImage = originalStyle.backgroundImage;
-      document.body.style.backgroundSize = originalStyle.backgroundSize;
-      document.body.style.backgroundPosition = originalStyle.backgroundPosition;
-      document.body.style.backgroundRepeat = originalStyle.backgroundRepeat;
-      document.body.style.margin = originalStyle.margin;
-      document.body.style.height = originalStyle.height;
-    };
-  }, []);
+  const [customerName, setCustomerName] = useState('');
+  const [checkInDate, setCheckInDate] = useState(dayjs());
+  const [checkOutDate, setCheckOutDate] = useState(dayjs().add(1, 'day'));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const data = {
       customerName,
       checkInDate: checkInDate.format('YYYY-MM-DD'),
@@ -63,57 +33,57 @@ const Roombook = () => {
         body: JSON.stringify(data),
       });
       const result = await response.json();
-      console.log('Success roombook:', result);
-      alert('Data submitted successfully');
+      alert(result.message); // Consider using a more advanced notification system
+      navigate('/some-success-path'); // Modify according to your route setup
     } catch (error) {
       console.error('Error:', error);
-      alert('Failed to submit data');
+      alert('Failed to submit data'); // Consider using a more advanced notification system
     }
   };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <form 
-        onSubmit={handleSubmit} 
-        className="flex flex-col gap-5 items-center py-8 px-4 w-full max-w-md mx-auto rounded-lg shadow bg-white"
-      >
-        <TextField
-          label="Customer Name"
-          variant="outlined"
-          value={customerName}
-          onChange={(e) => setCustomerName(e.target.value)}
-          required
-          className="w-full"
-        />
-        <DatePicker
-          label="Check-in Date"
-          value={checkInDate}
-          onChange={setCheckInDate}
-          minDate={dayjs()}
-          renderInput={(params) => <TextField {...params} />}
-        />
-        <DatePicker
-          label="Check-out Date"
-          value={checkOutDate}
-          onChange={setCheckOutDate}
-          minDate={checkInDate.add(1, 'day')}
-          renderInput={(params) => <TextField {...params} />}
-        />
-        <Button 
-          variant="contained" 
-          type="submit"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+      <div className="min-h-screen flex items-center justify-center bg-cover bg-center bg-[url('https://i.pinimg.com/736x/21/71/35/2171358ee3a18ff8191a88fc60ac8073.jpg')]">
+        <form 
+          onSubmit={handleSubmit} 
+          className="flex flex-col gap-5 items-center p-8 w-full max-w-md mx-auto rounded-lg shadow-lg bg-white/90 backdrop-blur-sm"
         >
-          Book
-        </Button>
-      </form>
+          <TextField
+            label="Customer Name"
+            variant="outlined"
+            value={customerName}
+            onChange={(e) => setCustomerName(e.target.value)}
+            required
+            className="w-full"
+          />
+          <DatePicker
+            label="Check-in Date"
+            value={checkInDate}
+            onChange={setCheckInDate}
+            minDate={dayjs()}
+            renderInput={(params) => <TextField {...params} />}
+          />
+          <DatePicker
+            label="Check-out Date"
+            value={checkOutDate}
+            onChange={setCheckOutDate}
+            minDate={checkInDate.add(1, 'day')}
+            renderInput={(params) => <TextField {...params} />}
+          />
+          <Button
+            variant="contained"
+            type="submit"
+            className="mt-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-150 ease-in-out"
+          >
+            Book
+          </Button>
+        </form>
+      </div>
     </LocalizationProvider>
   );
 };
 
-
 const TableBooking = () => {
-
   const [bookingDate, setBookingDate] = useState(dayjs());
   const [bookingTime, setBookingTime] = useState(dayjs());
   const [numberOfPeople, setNumberOfPeople] = useState(1);
@@ -129,14 +99,14 @@ const TableBooking = () => {
       bookingTime: bookingTime.format('HH:mm'),
       numberOfPeople,
       customerName,
-      dinings:diningid,
+      diningid,
       hotelid
     };
 
-    console.log("boking data",bookingData);
+    console.log("Booking data", bookingData);
 
     try {
-      const response = await fetch('/bookTable', { // Replace '/api/bookTable' with your actual endpoint
+      const response = await fetch('/bookTable', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -163,34 +133,47 @@ const TableBooking = () => {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '300px' }}>
-        <DatePicker
-          label="Booking Date"
-          value={bookingDate}
-          onChange={setBookingDate}
-          renderInput={(params) => <TextField {...params} />}
-          minDate={dayjs()}
-        />
-        <TimePicker
-          label="Booking Time"
-          value={bookingTime}
-          onChange={setBookingTime}
-          renderInput={(params) => <TextField {...params} />}
-        />
-        <TextField
-          label="Number of People"
-          type="number"
-          value={numberOfPeople}
-          onChange={(e) => setNumberOfPeople(e.target.value)}
-          InputProps={{ inputProps: { min: 1 } }}
-        />
-        <TextField
-          label="Customer Name"
-          value={customerName}
-          onChange={(e) => setCustomerName(e.target.value)}
-        />
-        <Button type="submit" variant="contained">Book Table</Button>
-      </form>
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundImage: "url('https://st2.depositphotos.com/30312588/47073/i/450/depositphotos_470735506-stock-photo-metal-plaque-words-reserved-stands.jpg')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
+        <form 
+          onSubmit={handleSubmit} 
+          className="flex flex-col gap-4 p-8 bg-white shadow-md rounded-lg max-w-md mx-auto backdrop-filter backdrop-blur-lg bg-opacity-90"
+        >
+          <DatePicker
+            label="Booking Date"
+            value={bookingDate}
+            onChange={setBookingDate}
+            renderInput={(params) => <TextField {...params} className="w-full" />}
+            minDate={dayjs()}
+          />
+          <TimePicker
+            label="Booking Time"
+            value={bookingTime}
+            onChange={setBookingTime}
+            renderInput={(params) => <TextField {...params} className="w-full" />}
+          />
+          <TextField
+            label="Number of People"
+            type="number"
+            value={numberOfPeople}
+            onChange={(e) => setNumberOfPeople(e.target.value)}
+            InputProps={{ inputProps: { min: 1 } }}
+            className="w-full"
+          />
+          <TextField
+            label="Customer Name"
+            value={customerName}
+            onChange={(e) => setCustomerName(e.target.value)}
+            className="w-full"
+          />
+          <Button
+            type="submit"
+            variant="contained"
+            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-200"
+          >
+            Book Table
+          </Button>
+        </form>
+      </div>
     </LocalizationProvider>
   );
 };

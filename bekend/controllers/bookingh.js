@@ -68,7 +68,7 @@ const roombook=async(req,res)=>{
      const adduser= await User.findOneAndUpdate(
        { _id: user.id }, 
        { $push: { roombook: bookr } ,
-        $push: { hotelbook: bookr } ,      
+        $push: { hotelbook: hotelid } ,      
             
       }, 
        { new: true } 

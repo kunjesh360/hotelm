@@ -101,7 +101,7 @@ const [confirmPasswordShown, setConfirmPasswordShown] = useState(false);
   );
   
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[url('https://img.freepik.com/free-photo/receptionists-elegant-suits-work-hours_23-2149714442.jpg?w=996')] bg-cover bg-center">
+    <div className="min-h-screen flex items-center justify-center bg-[url('https://www.itl.cat/pngfile/big/0-2575_tumblr-shirt.jpg')] bg-cover bg-center">
     <form onSubmit={handleSubmit} className="max-w-lg mx-auto my-10 p-8 shadow-2xl rounded-lg bg-white/80 backdrop-blur-md space-y-4">
     <div className="space-y-4">
         <input type="text" name="firstName" placeholder="First Name" value={formData.firstName} onChange={handleChange} className="w-full px-4 py-2 border rounded-md text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" />

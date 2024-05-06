@@ -49,16 +49,19 @@ for (let [key, value] of data.entries()) {
 
 
       const result = await response.json();
-      console.log('Success:', result);
-      alert('Feedback submitted successfully!');
+      console.log('Success=====:', result);
+      // if(result.)
+        // console.log("re----",result.message);
+      alert(result.message);
+      // alert('Feedback submitted successfully!');
 
       // // Reset the form after successful submission
-      // setFormData({
-      //   username: '',
-      //   description: '',
-      //   hotelName: '',
-      //   rating: 0,
-      // });
+      setFormData({
+        username: '',
+        description: '',
+        hotelName: '',
+        rating: 0,
+      });
 
     } catch (error) {
       console.error('Error submitting feedback:', error);

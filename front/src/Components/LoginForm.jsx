@@ -5,126 +5,101 @@ import { toast } from "react-hot-toast";
 import {useAuth} from "./AuthContext"
 const UserContext = createContext();
 
-const LoginForm = ({ props }) => {
+// import { useState } from "react";
+// import { useAuth } from "./path/to/useAuth"; // Adjust the path as necessary
+// import { useNavigate } from "react-router-dom";
+// import { toast } from 'react-toastify'; // Ensure react-toastify is installed
+
+const LoginForm = () => {
   const { setIsLoggedIn, setUserProfile } = useAuth();
-    
-   
+  const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
 
-    const navigate = useNavigate();
-    
-    const [showPassword, setShowPassword] = useState(false)
-    const [formData, setFormData] = useState({
-        email: "",
-        password: "",
-    });
+  function changeHandler(event) {
+    setFormData(prev => ({
+      ...prev,
+      [event.target.name]: event.target.value,
+    }));
+  }
 
-    function changeHandler(event) {
-        setFormData((prev) => ({
-            ...prev,
-            [event.target.name]: event.target.value,
-        }));
+  async function submitHandler(event) {
+    event.preventDefault();
+    toast.success("Login Success");
+    setIsLoggedIn(true);
+    try {
+      const response = await fetch("/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setUserProfile(data.data);
+      navigate("/");
+    } catch (error) {
+      console.error("Form submission error:", error);
+      toast.error("Login failed. Please try again.");
     }
+  }
 
-    async function submitHandler(event) {
+  return (
+    <div className="relative min-h-screen bg-cover bg-[url('https://c0.wallpaperflare.com/preview/243/377/129/motel-hotel-sign-neon-sign.jpg')]">
+      <div className="max-w-lg mx-auto p-8 bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl mt-20">
+        <form onSubmit={submitHandler} className="flex flex-col gap-y-4">
+          <div>
+            <label htmlFor="email" className="text-lg font-medium text-gray-700">Email Address *</label>
+            <input
+              type="email"
+              required
+              value={formData.email}
+              onChange={changeHandler}
+              name="email"
+              className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Enter your email"
+            />
+          </div>
 
-        event.preventDefault();
-        console.log("fromdata==",formData);
-        toast.success("Login Success");
-        console.log(formData)
-        setIsLoggedIn(true);
-        try {
-            const savedUserResponse = await fetch(
-              `/login`,
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ ...formData }),
-              }
-            );
-            const data = await savedUserResponse.json();
+          <div className="relative">
+            <label htmlFor="password" className="text-lg font-medium text-gray-700">Password *</label>
+            <input
+              type={showPassword ? "text" : "password"}
+              required
+              value={formData.password}
+              onChange={changeHandler}
+              name="password"
+              className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Enter password"
+            />
+            <span
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 cursor-pointer"
+            >
+              {/* Eye Icon Here */}
+            </span>
+          </div>
 
-            console.log("data--",data.data);
-            
-            setIsLoggedIn(true); // Update isLoggedIn state in context
-            setUserProfile(data.data); 
-            // if (!savedUserResponse.ok) {
-            //   throw new Error(`HTTP error! status kunj: ${savedUserResponse.status}`);
-            // }
-      
-            console.log("FORM RESPONSE......", savedUserResponse);
-      
-        
-          
-            // console.log("Form submitted successfully. Server Response:", data);
-            // Handle successful form submission here (e.g., display a message, redirect, etc.)
-          } catch (error) {
-            console.error("Form submission error:", error);
-            // Handle form submission error here (e.g., display error message)
-          }
-      
-        // console.log("userp----",userp.current);
-        navigate("/");
-    }
+          <a href="#" className="self-end text-blue-600 hover:text-blue-700 text-sm mt-2">Forgot Password?</a>
 
-    return (
-    <div>
-            <form onSubmit={submitHandler} class="flex flex-col gap-y-4 mt-8 px-4 md:px-8 py-6 max-w-lg mx-auto bg-white rounded-2xl shadow-lg transition duration-500 ease-in-out transform hover:-translate-y-1 hover:shadow-2xl">
-        <div class="w-full">
-          <label for="email" class="block text-lg font-medium text-gray-800 mb-2">
-            Email Address <span class="text-rose-600">*</span>
-          </label>
-          <input
-            id="email"
-            type="email"
-            required
-            value={formData.email}
-            placeholder="Enter your email address"
-            onChange={changeHandler}
-            name="email"
-            class="mt-1 block w-full px-4 py-3 bg-gray-50 border-2 border-gray-300 rounded-lg text-gray-900 shadow placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent"
-          />
-        </div>
-    
-        <div class="w-full relative">
-          <label for="password" class="block text-lg font-medium text-gray-800 mb-2">
-            Password <span class="text-rose-600">*</span>
-          </label>
-          <input
-            id="password"
-            type={showPassword ? "text" : "password"}
-            required
-            value={formData.password}
-            placeholder="Enter Password"
-            onChange={changeHandler}
-            name="password"
-            class="mt-1 block w-full px-4 py-3 bg-gray-50 border-2 border-gray-300 rounded-lg text-gray-900 shadow placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent"
-          />
-          <span
-            onClick={() => setShowPassword(!showPassword)}
-            class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 cursor-pointer hover:text-rose-600"
+          <button
+            type="submit"
+            className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-150 ease-in-out"
           >
-            {/* Replace with eye/eye-off icon based on `showPassword` */}
-          </span>
-        </div>
-    
-        <a href="#" class="text-sm font-medium text-blue-600 hover:text-blue-700 mt-2 self-end">
-          Forgot Password?
-        </a>
-    
-        <button
-          type="submit"
-          class="mt-4 w-full bg-rose-600 hover:bg-rose-800 text-white font-bold py-3 px-6 rounded-lg shadow focus:outline-none focus:ring-4 focus:ring-rose-500 focus:ring-opacity-50 transition duration-150 ease-in-out"
-        >
-          Sign In
-        </button>
-    </form>
-    
+            Sign In
+          </button>
+        </form>
+      </div>
     </div>
-      
-    );
+  );
 };
+
+export default LoginForm;
+
 
 const LogoutButton = () => {
     const navigate = useNavigate();

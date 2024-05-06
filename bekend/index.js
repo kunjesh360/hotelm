@@ -48,7 +48,7 @@ app.post('/signup',singups );
 app.post('/login',login );
 app.get('/logout',authenticate, async (req, res) => {
   try {
-    // Assuming you have the user's ID available (e.g., from the session or decoded JWT)
+  
     const userId = req.user.id;
     console.log("user id==", userId);
     await User.findByIdAndUpdate(userId, { $inc: { tokenVersion: 1 } });
@@ -107,6 +107,19 @@ app.listen(PORT, () => {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+  
 
 
 

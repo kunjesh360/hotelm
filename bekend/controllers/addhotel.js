@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const hotel=require("../models/hotel")
 const Room=require("../models/room");
 const Dining= require("../models/dining")
@@ -440,7 +441,9 @@ const hotlfeedback= async(req,res)=>{
         });
     }
    
-    const hotlf=hotel.findOne({hotelName:hotelName})
+
+
+    const hotlf= await hotel.findOne({hotelName:hotelName})
     if(!hotlf)
     {
       return res.status(500).json({
@@ -449,20 +452,37 @@ const hotlfeedback= async(req,res)=>{
         });
 
     }
-    console.log("hotelf---",hotlf);
+    console.log("hotelf---------------------",hotlf);
+    console.log("hotelfid---------------------",hotlf.id);
     const user= req.user
-    console.log("user--", user);
-    console.log("user--", user.id);
+    console.log("user----------------------=", user);
+    console.log("userid-------------------------------", user.id);
     const userb=user.id;
-   //  ****worj
+
     const userr = await User.findOne({ _id: user.id });
+
+
     console.log("user find===",userr);
-    // const hotelbook = await Bookingroom.findOne({})
-    // const hotels = await User.find({_id: {$in: hotelbook}}).toArray();
-    // console.log("hotels------",hotels);
-    
-    
-   
+
+    const objectId = new mongoose.Types.ObjectId(hotlf.id);
+
+console.log("object id========================",objectId); 
+
+      try {
+        const userbook = await User.find({
+          hotelbook: new ObjectId(hotlf.id)
+        });
+          console.log("user book found or not=========================",userbook);
+   if(userbook.length<=0)
+    {
+      console.log("usr noyttt---",userbook);
+    return  res.status(500).json({ success: false,  message: 'plesh book the room ya table', });
+    }
+console.log("kunjesjmmamckjm",userbook.length);
+
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
 
    const nrew=revie({
     username,
@@ -506,6 +526,28 @@ const hotlfeedback= async(req,res)=>{
 }
 
 module.exports ={addhotel,handleRoomUpload,allhotel,dingadd,hotlfeedback,onehotel};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -660,3 +702,33 @@ module.exports ={addhotel,handleRoomUpload,allhotel,dingadd,hotlfeedback,onehote
 //   }
 // }
     
+
+
+
+
+// try {
+//   const userbook=await User.aggregate([
+//     {
+//         $unwind: "$hotelbook"
+//     },
+//     {
+//         $match: {
+//             "hotelbook._id": objectId
+//         }
+//     }
+// ]);
+ 
+//   console.log("user book found or not=========================",userbook);
+// } catch (error) {
+//   console.log("add errrot------------",error);
+//   res.status(500).send(err.message);
+// }
+
+
+
+
+    // const hotelbook = await Bookingro.findOne({})
+    // const hotels = await User.find({_id: {$in: hotelbook}}).toArray();
+    // console.log("hotels------",hotels);
+    
+    // if()

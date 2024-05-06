@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import {  useNavigate } from "react-router-dom";
 import {  Route, Routes, Link,useLocation } from 'react-router-dom';
+import dayjs from 'dayjs';
+import { tw } from '@twind/react';
 import { MdCall } from "react-icons/md";
 import { IoMailOutline } from "react-icons/io5";
 import { FaShareNodes } from "react-icons/fa6";
@@ -17,120 +19,90 @@ import { FaRupeeSign } from "react-icons/fa";
 function HotelList() {
   const [hotels, setHotels] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [items, setitems] = useState([]);
   const navigate = useNavigate();
-    
+
   const getAllData = async () => {
     try {
-      const getPeople = await fetch(
-        `/allhotel`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      console.log("kunjesh999");
-      let names = [];
-      const res = await getPeople.json();
-      console.log("res000000000000===",res)
-      setHotels(res.data);
-      console.log("res--hotel",res.data);
-      console.log("res--hotel",res.data[0]);
-      const hot=res.data;
-      const newItems = hot.map(person => person.hotelName);
-      setitems(newItems)
-     
-      console.log("new-",newItems);
-    
-      console.log("item",items);
+      const response = await fetch(`/allhotel`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+      const res = await response.json();
+      if (res.data) {
+        setHotels(res.data);
+      }
     } catch (error) {
-      console.log("error");
-      console.log(error);
+      console.error("Failed to fetch hotels:", error);
     }
   };
-  useEffect(() => {
-    console.log("newItems updated:", items);
-  }, [items]);
-  useEffect(() => {
-    getAllData()
-  }, []);
 
-   
+  useEffect(() => {
+    getAllData();
+  }, []);
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
 
-  
   const filteredHotels = hotels.filter(hotel =>
     hotel.hotelName.toLowerCase().includes(searchTerm.toLowerCase())
   );
-  console.log("item",items);
-  console.log("fitem",filteredHotels);
-const navegate =(hotel)=>{
-  console.log("kunjinside hotelist");
-  navigate("/hotel", { state: {hotel} });
-}
 
+  const navigateToHotel = (hotel) => {
+    navigate("/hotel", { state: { hotel } });
+  };
 
   return (
-    <div className='bg-white	'>
-   
-
-       {/* Search Input */}
-       <div className="max-w-md mx-auto">
+    <div className={tw`bg-white`}>
+      <div className={tw`max-w-md mx-auto`}>
         <input
           type="text"
           placeholder="Search..."
           value={searchTerm}
           onChange={handleSearchChange}
-          className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className={tw`w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
         />
       </div>
 
-     
-
-      <div className="container mx-auto p-4">
-        {filteredHotels.length >0 ? filteredHotels.map(hotel => (
-          <div key={hotel._id} className="flex flex-row w-full h-64 rounded overflow-hidden shadow-lg mb-6">
-           
-          <img 
-  className="object-cover w-[200px] h-[300px] transform transition duration-300 ease-in-out hover:scale-105" 
-  src={hotel.images} 
-  alt={hotel.hotelName} 
-/>
-
-         
-            <div className="w-2/3 px-6 py-4 flex flex-col justify-between">
+      <div className={tw`container mx-auto p-4`}>
+        {filteredHotels.length > 0 ? filteredHotels.map(hotel => (
+          <div key={hotel._id} className={tw`flex flex-row w-full h-64 rounded overflow-hidden shadow-lg mb-6`}>
+            <img
+              className={tw`object-cover w-[200px] h-[300px] transform transition duration-300 ease-in-out hover:scale-105`}
+              src={hotel.images}
+              alt={hotel.hotelName}
+            />
+            <div className={tw`w-2/3 px-6 py-4 flex flex-col justify-between`}>
               <div>
-                <div className="font-bold text-xl mb-2">{hotel.hotelName}</div>
-                <div className="font-style: italic text-xl mb-2">
-                  {hotel.description.split(' ').length > 15
-                    ? `${hotel.description.split(' ').slice(0, 15).join(' ')}...`
-                    : hotel.description
-                  }
-                </div>
-                <p className="text-gray-600 text-base">
-                  {hotel.hpDescription.split('=').filter(policy => policy.trim()).map((policy, index) => (
-                    <div key={index}>{policy.trim()}</div>
-                  ))}
+                <div className={tw`font-bold text-xl mb-2`}>{hotel.hotelName}</div>
+                <p className={tw`text-gray-600 text-base`}>
+                  {hotel.description.split(' ').slice(0, 30).join(' ')}...
                 </p>
-                <p className="text-gray-600 text-base">Starting Rate: ${hotel.Price}</p>
+                <p className={tw`text-gray-600 text-base`}>
+                  <span className={tw`font-bold`}>Starting Rate:</span> ${hotel.Price}
+                </p>
+                <div className="flex items-center space-x-2">
+                <MdCall className="text-gray-600" />
+                <p className="text-gray-600 text-base">
+                    <span className="font-bold">contact:</span> {hotel.phoneNumber}
+                </p>
+            </div>
+                        <div className="flex items-center space-x-2">
+                <IoMailOutline className="text-gray-600" />
+                <p className="text-gray-600 text-base">
+                    <span className="font-bold">Email:</span> {hotel.email}
+                </p>
+            </div>
               </div>
-              <button onClick={() => navegate(hotel)} className="inline-block bg-blue-500 text-white px-3 py-2 rounded hover:bg-blue-400 focus:outline-none focus:ring">
+              <button onClick={() => navigateToHotel(hotel)} className={tw`bg-blue-500 text-white px-3 py-2 rounded hover:bg-blue-400 focus:outline-none focus:ring`}>
                 More Details
               </button>
             </div>
           </div>
-        )) :
-          <p className="text-center"></p>
-        }
+        )) : <p className={tw`text-center`}>No hotels found.</p>}
+        
       </div>
-
-
- 
+      
     </div>
   );
 }
@@ -223,12 +195,14 @@ Price: {room.price}</p>
 }
  
 <div>
-      <button 
-        className="text-white bg-black text-xl font-bold py-4 px-6"
-        onClick={navigateToReview}
-      >
-        Give Reviews
-      </button>
+<button
+  className="bg-black hover:bg-gray-900 text-white text-xl font-bold py-4 px-6 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-xl"
+  onClick={navigateToReview}
+>
+  Give Reviews
+</button>
+
+
       <h1
       
         className="text-white bg-black text-xl font-bold py-4 px-6"
@@ -238,24 +212,23 @@ Price: {room.price}</p>
 
       {/* Reviews Section */}
     </div>
-    {
-  reviews ? (
-    <div className="space-y-4">
-      {reviews.map((review) => (
-        <div key={review.id} className="bg-white shadow-lg rounded-lg p-4">
-          <p className="text-gray-700 text-base font-semibold">{review.username}</p>
-          <p className="text-gray-600 text-sm">{review.description}</p>
-          <div className="flex items-center">
-            {generateStars(review.rating)}
-          </div>
+    <div className="space-y-4 mx-auto w-full p-4">
+  {reviews.map((review) => (
+    <div key={review.id} className="bg-white shadow-lg rounded-lg p-6 flex flex-col md:flex-row md:items-center gap-4">
+      <img src={review.userAvatarUrl || 'https://via.placeholder.com/150'} alt="User Avatar" className="w-24 h-24 rounded-full mx-auto md:mx-0"/>
+      <div className="flex-1">
+        <h3 className="text-gray-800 text-xl font-semibold">{review.username}</h3>
+        <p className="text-gray-500 text-xs mb-4">{dayjs(review.date).format('MMMM D, YYYY')}</p>
+        <div className="flex items-center mb-2">
+          {generateStars(review.rating)}
         </div>
-      ))}
+        <p className="text-gray-600 text-sm">{review.description}</p>
+      </div>
     </div>
-  ) : (
-    <p className="text-center text-xl py-4">Loading...</p>
-  )
-}
- 
+  ))}
+</div>
+
+
 
   </div>
 )};
@@ -390,7 +363,7 @@ function Hotel(){
 
   console.log("kunj--k------",hoteld); 
   console.log("kunj--k2",hotel); 
-  console.log("kunj--kr2-----",hoteld.reviewsOptions); 
+  console.log("kunj--reviewoption-----",hoteld.reviewsOptions); 
   console.log("kunj--kd2-----",hoteld.diningOptions); 
   console.log("kunj--kro2-----",hoteld.roomOptions); 
   const hotelfaclite=hotelData.hpDescription.split('=');
@@ -414,13 +387,13 @@ function Hotel(){
   return(
 
     <div>
-           <h1>hotel!</h1>
-           <h2>Rooms</h2>
+           {/* <h1>hotel!</h1>
+           <h2>Rooms</h2> */}
     
            <nav className="bg-gray-800 text-white p-4">
       <ul className="flex justify-between items-center">
         <li className="mx-2">
-          {/* Replacing Link with button and onClick handler */}
+        
           <button
             onClick={() => navigate('/hotel',{ state: {
               hotel:hotel,
@@ -548,6 +521,10 @@ function Hotel(){
             {hPolicies[4]}
             </div>
           </div>
+
+
+
+
         </div>  :
             {/* <div className="flex justify-center items-center space-x-2">
           <svg className="animate-spin h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
