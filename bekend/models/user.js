@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema({
       type: String,
       required: true
     },
-    password: { // Make sure to hash passwords before saving!
+    password: { 
       type: String,
       required: true
     },
@@ -47,6 +47,23 @@ const userSchema = new mongoose.Schema({
     }],
     roombook: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Room' }],
     reivehotel: [{ type: mongoose.Schema.Types.ObjectId, ref: 'revie' }],
+    likeh:[{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'hotel', 
+    }],
+    liker:[{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Room', 
+    }],
+    liked:[{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Dining', 
+    }],
+    otps: [{
+      code: { type: String, required: true },
+      created: { type: Date, required: true, default: Date.now },
+      expires: { type: Date, required: true }
+    }]
   });
 
 module.exports = mongoose.model("User", userSchema);

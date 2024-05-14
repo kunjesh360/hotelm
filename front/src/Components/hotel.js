@@ -14,7 +14,9 @@ import { MdOutlineFamilyRestroom } from "react-icons/md";
 import { LuBedSingle } from "react-icons/lu";
 import { FaWifi } from "react-icons/fa";
 import { FaRupeeSign } from "react-icons/fa";
-
+import {ReviewCard} from "./About"
+import { FaHeart, FaRegHeart } from 'react-icons/fa';
+import { useAuth } from './AuthContext';
 
 function HotelList() {
   const [hotels, setHotels] = useState([]);
@@ -148,12 +150,13 @@ const Roomhotel = () => {
 
       }})
   }
-const navigateToReview=()=>{
-  navigate('/HotelReviewForm',{ state: {
-    hotelName: hotel.hotelName
+// const navigateToReview=()=>{
+//   navigate('/HotelReviewForm',{ state: {
+//     hotelName: hotel.hotelName
 
-  }})
-}
+//   }}
+// )
+// }
   return(
   <div>
         
@@ -165,21 +168,25 @@ const navigateToReview=()=>{
         <img className="h-48 w-full object-cover md:h-full md:w-48" src={room.imagePath} alt={room.roomtype} />
         <div className="p-8">
           <h2 className="block mt-1 text-lg leading-tight font-medium text-black">{room.roomtype}</h2>
+
           <p className="mt-2 text-gray-500">{room.description1}</p>
           
           <p className="mt-2 text-gray-500 flex items-center"><FaWifi className="mr-2" />
          WiFi: {room.wifi}</p>
+
         <p className="mt-2 text-gray-500 flex items-center">
           <MdOutlineMeetingRoom className="mr-2" />
           Area: {room.area}
         </p>
+
           <p className="mt-2 text-gray-500 flex items-center"><MdOutlineFamilyRestroom  className="mr-2" />
 Capacity: {room.capacity}</p>
+
           <p className="mt-2 text-gray-500 flex items-center"><LuBedSingle  className="mr-2" />
 Bed: {room.bed}</p>
           <p className="mt-2 text-gray-500 flex items-center"><FaRupeeSign className="mr-2"  />
 Price: {room.price}</p>
-          {/* Add more details as needed */}
+         
           <button 
             className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
             onClick={() => roombook(room._id,hotel._id)}
@@ -195,24 +202,24 @@ Price: {room.price}</p>
 }
  
 <div>
-<button
+{/* <button
   className="bg-black hover:bg-gray-900 text-white text-xl font-bold py-4 px-6 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-xl"
-  onClick={navigateToReview}
+  // onClick={navigateToReview}
 >
   Give Reviews
-</button>
+</button> */}
 
 
-      <h1
+      {/* <h1
       
         className="text-white bg-black text-xl font-bold py-4 px-6"
       >
         What our guests say
-      </h1>
+      </h1> */}
 
       {/* Reviews Section */}
     </div>
-    <div className="space-y-4 mx-auto w-full p-4">
+    {/* <div className="space-y-4 mx-auto w-full p-4">
   {reviews.map((review) => (
     <div key={review.id} className="bg-white shadow-lg rounded-lg p-6 flex flex-col md:flex-row md:items-center gap-4">
       <img src={review.userAvatarUrl || 'https://via.placeholder.com/150'} alt="User Avatar" className="w-24 h-24 rounded-full mx-auto md:mx-0"/>
@@ -226,7 +233,7 @@ Price: {room.price}</p>
       </div>
     </div>
   ))}
-</div>
+</div> */}
 
 
 
@@ -317,6 +324,8 @@ function Hotel(){
     diningOptions:{},
     reviewsOptions:{}
   });
+
+  const {likedHotels, setLikedHotels} = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const currentPath = location.pathname;
@@ -325,7 +334,7 @@ function Hotel(){
   const [shomore, setShomore] = useState(true);
 
   const hotel = location.state?.hotel;
-   console.log("hotel----",hotel,"llll",location.state);
+   console.log("hotel------------------------",hotel,"llll",location.state);
    
 
   const renderh = async (e) => {
@@ -361,9 +370,18 @@ function Hotel(){
      return;
     }
 
+        const navigateToReview=()=>{
+      navigate('/HotelReviewForm',{ state: {
+        hotelName: hotel.hotelName
+
+      }}
+    )
+    }
+
   console.log("kunj--k------",hoteld); 
   console.log("kunj--k2",hotel); 
   console.log("kunj--reviewoption-----",hoteld.reviewsOptions); 
+  const reviews=hoteld.reviewsOptions;
   console.log("kunj--kd2-----",hoteld.diningOptions); 
   console.log("kunj--kro2-----",hoteld.roomOptions); 
   const hotelfaclite=hotelData.hpDescription.split('=');
@@ -383,6 +401,19 @@ function Hotel(){
   const showmorek =()=>(
     setShomore(!shomore)
   )
+  const isLiked = likedHotels.includes(hotelData._id);
+
+  const toggleLike = (hotelId) => {
+    console.log("hotelid",hotelId);
+    setLikedHotels(prev => {
+        const isAlreadyLiked = prev.includes(hotelId);
+        return isAlreadyLiked ? prev.filter(id => id !== hotelId) : [...prev, hotelId];
+    });
+};
+
+console.log("like data--",isLiked);
+
+console.log("like data--",likedHotels);
 
   return(
 
@@ -405,7 +436,7 @@ function Hotel(){
           </button>
         </li>
         <li className="mx-2">
-          {/* Replacing Link with button and onClick handler */}
+          
           <button
             onClick={() => navigate('/hotel/Roomhotel',{ state: {
               
@@ -420,7 +451,7 @@ function Hotel(){
           </button>
         </li>
         <li className="mx-2">
-          {/* Replacing Link with button and onClick handler */}
+        
           <button
             onClick={() => navigate('/hotel/Dining',{ state: {
               hotel:hotel,
@@ -439,8 +470,23 @@ function Hotel(){
         {hotelData ? 
         <div className="w-2/3 mx-auto bg-white shadow-lg rounded-lg overflow-hidden" style={{ minHeight: '66vh' }}>
           <img className="w-full" style={{ height: '66vh', objectFit: 'cover' }} src={hotelData.images} alt={hotelData.hotelName} />
+
           <div className="p-4">
-            <div className="font-bold text-xl mb-2">{hotelData.hotelName}</div>
+          <div className="flex items-center justify-between">
+    <div className="font-bold text-xl">{hotelData.hotelName}</div>
+    <button 
+        onClick={() => toggleLike(hotelData._id)}
+        className="transition duration-150 ease-in-out transform hover:scale-125 active:scale-95"
+        style={{ background: 'none', border: 'none', cursor: 'pointer', outline: 'none' }}
+    >
+        {isLiked 
+            ? <FaHeart className="text-red-500 text-3xl" /> 
+            : <FaRegHeart className="text-gray-400 text-3xl" />}
+    </button>
+</div>
+
+
+
                       <div className="text-gray-700 text-base mb-1 pb-4 flex items-center">
             <i className="fas fa-phone mr-2"></i>
             <MdCall />
@@ -461,6 +507,7 @@ function Hotel(){
               onClick={()=>showmorek()}>
               showmore
             </div>
+
 
             </> :<>
         
@@ -520,9 +567,10 @@ function Hotel(){
             {hPolicies[3]}
             {hPolicies[4]}
             </div>
+      
           </div>
 
-
+        
 
 
         </div>  :
@@ -543,6 +591,12 @@ function Hotel(){
           <p className="text-lg text-gray-800 font-semibold">No data found...</p>
           <p className="text-gray-600 mt-2">Please check back later.</p>
         </div>
+        
+       
+
+
+
+
       </div>
 )
                 }
@@ -552,17 +606,111 @@ function Hotel(){
         </div>)
     }
 
+    {
+      shouldDisplayHotelData&&(
+          <>
+            <button
+        className="bg-black hover:bg-gray-900 text-white text-xl font-bold py-4 px-6 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-xl"
+        onClick={navigateToReview}
+      >
+        Give Reviews
+      </button>
+      <>
+      <div className={tw`bg-black`}>
+        <h1 className={tw`text-white text-xl font-bold py-4 px-6`}>
+        Guest Reviews
+        </h1>
+      </div>
+      <div className={tw`flex justify-center`}> 
+        <div className={tw`w-full max-w-4xl px-4`}>  
+          <ReviewCard reviews={reviews} />
+        </div>
+      </div>
+    </>
+
+          </>
+      )
+    }
+   
+
+
+
+     
+
+
 
        <Routes>
          <Route path="/" element={< HotelHome />} />
          <Route path="/Dining" element={< Dining />} />
          <Route path="/Roomhotel" element={< Roomhotel />} />
        </Routes>
+
          </div>
   )
 
 }
 
+const Like = () => {
+  const { likedHotels } = useAuth();
+  const [hotels, setHotels] = useState([]);
+
+  useEffect(() => {
+    if (likedHotels.length > 0) {
+      fetch('/hotels/by-ids', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ hotelIds: likedHotels })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data && data.hotels) {
+          console.log(
+            'Fetched hotels:=====',
+            data.hotels
+          );
+          setHotels(data.hotels);
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching hotels:', error);
+      });
+    }
+  }, [likedHotels]);
+
+  return (
+<div className="bg-white p-6 rounded-lg shadow-lg max-w-2xl mx-auto mt-10">
+  <h1 className="text-2xl font-bold text-center mb-4">Liked Hotels</h1>
+  {hotels.length > 0 ? (
+    <ul className="list-disc pl-5 space-y-2">
+      {hotels.map(hotel => (
+        <div className="max-w-sm rounded overflow-hidden shadow-lg m-4">
+      <img className="w-full h-48 object-cover" src={hotel.images} alt={hotel.hotelName} />
+      <div className="px-6 py-4">
+        <div className="font-bold text-xl mb-2">{hotel.hotelName}</div>
+        <p className="text-gray-700 text-base mb-4">
+          {hotel.description.split(' ').slice(0, 20).join(' ')}...
+        </p>
+        <div className="text-sm font-semibold mb-2">Price: {hotel.Price}</div>
+        <div className="text-sm mb-2">Contact: {hotel.phoneNumber}</div>
+        <div className="text-sm mb-2">Email: {hotel.email}</div>
+      </div>
+      <div className="px-6 pt-4 pb-2">
+        {hotel.dining.length > 0 && (
+          <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">Dining Options Available</span>
+        )}
+        <div className="text-sm mb-2">Check-in: 2:00 PM | Check-out: 12:00 Noon</div>
+      </div>
+    </div>
+      ))}
+    </ul>
+  ) : (
+    <p className="text-gray-600 text-center">No liked hotels to display.</p>
+  )}
+</div>
+  );
+};
 
 
 
@@ -571,7 +719,27 @@ function Hotel(){
 
 
 
-export {  HotelHome, HotelList,Hotel,Dining,Roomhotel };
+export {  HotelHome, HotelList,Hotel,Dining,Roomhotel,Like };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //  function Posts() {

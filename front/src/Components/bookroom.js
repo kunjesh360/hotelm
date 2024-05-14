@@ -33,11 +33,11 @@ const Roombook = () => {
         body: JSON.stringify(data),
       });
       const result = await response.json();
-      alert(result.message); // Consider using a more advanced notification system
-      navigate('/some-success-path'); // Modify according to your route setup
+      alert(result.message); 
+      navigate('/HotelList'); 
     } catch (error) {
       console.error('Error:', error);
-      alert('Failed to submit data'); // Consider using a more advanced notification system
+      alert('Failed to submit data');
     }
   };
 
@@ -84,6 +84,7 @@ const Roombook = () => {
 };
 
 const TableBooking = () => {
+  const navigate = useNavigate();
   const [bookingDate, setBookingDate] = useState(dayjs());
   const [bookingTime, setBookingTime] = useState(dayjs());
   const [numberOfPeople, setNumberOfPeople] = useState(1);
@@ -119,7 +120,7 @@ const TableBooking = () => {
       const result = await response.json();
       console.log(result);
       alert('Booking successful');
-
+      navigate('/HotelList'); 
       // Reset form
       setBookingDate(dayjs());
       setBookingTime(dayjs());

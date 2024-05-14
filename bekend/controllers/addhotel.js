@@ -429,7 +429,8 @@ const hotlfeedback= async(req,res)=>{
       username,
       hotelName,
       rating,
-      description
+      description,
+      image
     }=req.body;
     if(!username || !hotelName ||!rating)
     {
@@ -488,7 +489,8 @@ console.log("kunjesjmmamckjm",userbook.length);
     username,
     description,
     hotelName:  hotelName,
-    rating:rating
+    rating:rating,
+    image:image
    })
 
   const saverevi= await nrew.save();
@@ -525,7 +527,84 @@ console.log("kunjesjmmamckjm",userbook.length);
   }
 }
 
-module.exports ={addhotel,handleRoomUpload,allhotel,dingadd,hotlfeedback,onehotel};
+
+const updatep = async (req, res) => {
+  try {
+    console.log('Received fields:', req.body);
+    console.log('Received file:', req.file);
+
+    const { firstName, lastName, email, postalCode, country, phone } = req.body;
+    // let imageUrl = null;  // Initialize image URL as null
+
+    // Check if a file is uploaded and process it
+    if (req.file) {
+      console.log("File path:", req.file.path);
+
+      // Upload to Cloudinary
+      // const result = await cloudinary.uploader.upload(req.file.path, {
+      //   resource_type: 'auto'
+      // });
+      // console.log("Image upload result:", result);
+
+      // // Use secure URL from Cloudinary's response
+      // imageUrl = result.secure_url;
+      // console.log("Image URL:", imageUrl);
+    }
+
+    // Create or update user data in the database (uncomment and modify this part as per your database schema)
+    /*
+    const userData = await User.create({
+      firstName,
+      lastName,
+      email,
+      image: imageUrl,
+      postalCode,
+      country,
+      phone
+    });
+    console.log("User updated:", userData);
+    */
+
+    // Respond with success message
+    return res.json({
+      message: 'Profile updated successfully',
+      data: {
+        firstName,
+        lastName,
+        email,
+        phone,
+        country,
+        postalCode,
+        // imageUrl: imageUrl  // This could be the Cloudinary URL or null if no file was uploaded
+      }
+    });
+  } catch (error) {
+    console.error('Error in update profile:', error);
+    return res.status(500).json({
+      message: 'Failed to update profile',
+      error: error.message || 'Internal server error'
+    });
+  }
+}
+
+const likeh= async (req, res) => {
+  try {
+    console.log("enter a like hote",req.body);
+    const { hotelIds } = req.body;
+    const hotels = await hotel.find({
+      '_id': { $in: hotelIds }
+    });
+    console.log("hotels==",hotels);
+    res.json({ hotels });
+  } catch (error) {
+    console.error('Failed to retrieve hotels:', error);
+    res.status(500).json({ message: 'Failed to retrieve hotels' });
+  }
+}
+
+
+
+module.exports ={addhotel,handleRoomUpload,allhotel,dingadd,hotlfeedback,onehotel,updatep,likeh};
 
 
 

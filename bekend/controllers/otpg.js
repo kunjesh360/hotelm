@@ -171,8 +171,60 @@ const singups = async (req, res) => {
     }
 }
 
+const updatep=async (req, res) => {
+    try {
+      console.log('Received fields:', req.body);
+      console.log('Received file:', req.file);
+  
+      // You can now save req.body and req.file information to your database
+      // Simulating database save operation
+      // const savedUser = await saveUserProfile(req.body, req.file);
+  
+      // For now, just send back a success message
+      res.status(200).send({ success: true, message: 'Profile updated successfully', data: req.body });
+    } catch (error) {
+      console.error('Error processing the profile update:', error);
+      res.status(500).send({ success: false, message: 'Failed to update profile' });
+    }
+  }
 
-module.exports = {singups,login};
+
+  const paseworsupadat=async (req, res) => {
+    const { newPassword } = req.body;
+
+    try {
+        // Check if the email cookie exists
+        if (!req.cookies.user_email) {
+            return res.status(403).json({ message: 'Session expired, please log in again.' });
+        }
+
+        const emailFromCookie = req.cookies.user_email;
+console.log("email id",emailFromCookie);
+        // Generate a salt and hash the new password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+        // Update the user's password in the database
+        const updatedUser = await Userk.findOneAndUpdate(
+            { email: emailFromCookie },
+            { password: hashedPassword },
+            { new: true }
+        );
+
+        if (updatedUser) {
+            // Expire the cookie by setting its expiry to a past date
+            res.cookie('user_email', '', { expires: new Date(0), httpOnly: true, secure: true });
+
+            res.status(200).json({ message: 'Password updated successfully. Please log in again.' });
+        } else {
+            res.status(404).json({ message: 'User not found' });
+        }
+    } catch (error) {
+        console.error('Error updating password:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+  }
+module.exports = {singups,login,updatep,paseworsupadat};
 
 
 

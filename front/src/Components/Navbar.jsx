@@ -2,6 +2,9 @@ import React, { useState,useRef,useEffect } from 'react';
 import { Link,useNavigate } from 'react-router-dom';
 import Logo from "../assets/logo.png";
 import toast from 'react-hot-toast';
+import { SiQlik } from "react-icons/si";
+
+
 import { useAuth } from './AuthContext';
 function Navbar() {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -37,8 +40,8 @@ function Navbar() {
       <ul className="flex gap-x-6 text-black">
         <li><Link to="/">Home</Link></li>
         <li><Link to="/HotelList">Our Hotel</Link></li>
-        <li><Link to="/Ding">Dining</Link></li>
-        <li><Link to="/about">About</Link></li>
+        <li><Link to="/Chat">Chat</Link></li>
+        <li><Link to="/About">About</Link></li>
       </ul>
     </nav>
 
@@ -82,8 +85,11 @@ function Navbar() {
       
           />}
         </Link>
+       
       </div>
-   
+      <Link to="/like">
+        <SiQlik />
+        </Link>
           </>
         )}
       </div>

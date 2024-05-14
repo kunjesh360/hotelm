@@ -1,12 +1,13 @@
 
-
-
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { Link, useNavigate } from "react-router-dom";
 import React, { useState } from 'react';
 
 function SignupForm() {
   const [passwordShown, setPasswordShown] = useState(false);
 const [confirmPasswordShown, setConfirmPasswordShown] = useState(false);
-
+const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -78,6 +79,8 @@ const [confirmPasswordShown, setConfirmPasswordShown] = useState(false);
       const responseBody = await savedUserResponse.json();
       console.log("FORM RESPONSE......", responseBody);
       alert("Signup successful!");
+      toast.success("Signup successful! Welcome aboard.");
+      navigate("/LoginForm");
   
     } catch (error) {
       console.error("Form submission error:", error);
@@ -171,6 +174,7 @@ const [confirmPasswordShown, setConfirmPasswordShown] = useState(false);
           Submit
         </button>
       </form>
+      
     </div>
 
   );
